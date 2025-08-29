@@ -3,48 +3,45 @@ import FloatingInput from "../components/FloatingInput";
 import axios from "axios";
 import {BACKEND_URL} from "../config";
 import { Link } from "react-router-dom";
-export default function Signup() {
-  const [name, setName] = React.useState("");
-  const [dob, setDob] = React.useState("");
+export default function SignIn() {
+
   const [email, setEmail] = React.useState("");
   const [otp, setOtp] = React.useState("");
   const [settingOtp, setSettingOtp] = React.useState(false);
   const [error, setError] = React.useState("");
-//  const navigate = useNavigate()
+// const navigate = useNavigate()   to be used later
   const handleChange =
     (setter: React.Dispatch<React.SetStateAction<string>>) => (value: string) => {
       setter(value);
       setError(""); // Clear error when user types
     };
-
-  const handleSubmit = async(e: React.FormEvent) => {
+const login = async()=>{ await axios.post(`${BACKEND_URL}/user/login`, { email }, { withCredentials: true }).then(() => {
+ 
+  setSettingOtp(true);
+      }).catch((_error) => {
+        setError(_error.response?.data?.message );
+      });
+      }
+  const handleSubmit =async (e: React.FormEvent) => {
     e.preventDefault();
     if (!settingOtp) {
-      if (!name || !dob || !email) {
+      if (!email) {
         setError("Please fill out all fields before requesting OTP.");
         return;
       }
-      await axios.post(`${BACKEND_URL}/user/SignIn`, { username: name, dob, email }, { withCredentials: true }).then(() => {
-        
-        
-        setSettingOtp(true);
-      }).catch((_error) => {
-        setError(_error.response?.data?.message || "Failed to send OTP. Please try again.");
-      });
-     
+      login()
       
     } else {
       if (!otp) {
         setError("Please enter the OTP.");
         return;
       } await axios.post(`${BACKEND_URL}/user/verifyOtp`, { email, otp }, { withCredentials: true }).then(() => {
-        
-        
+     
         setSettingOtp(true);
       }).catch((_error) => {
-        setError("Failed to send OTP. Please try again.");
+        setError(_error.response?.data?.message );
       });
-
+      
     }
   };
 
@@ -55,28 +52,16 @@ export default function Signup() {
           <img src="/Logo.svg" alt="" className="sm:hidden block" />
           <img src="/logo2.svg" alt="" className="hidden sm:block ml-3" />
         </div>
-        <div className="sm:mt-50 xl:mt-40 lg:ml-10 lg:mr-10 xl:ml-20 xl:mr-20">
+        <div className="sm:mt-40 lg:ml-10 lg:mr-10 xl:ml-18 xl:mr-18">
           <h1 className="text-center sm:text-start sm:ml-4 font-bold text-3xl mb-2">
-            Sign up
+            Sign in
           </h1>
           <p className="text-center sm:text-start sm:ml-4 font-light text-neutral-500 font-stretch-125%">
-            Sign up to enjoy the feature of HD
+            Please login to continue to your account
           </p>
           <div className="p-4 mt-4">
             <form onSubmit={handleSubmit} className="space-y-5">
-              <FloatingInput
-                label="Your Name"
-                value={name}
-                onChange={handleChange(setName)}
-               
-              />
-              <FloatingInput
-                label="Date of Birth"
-                type="date"
-                value={dob}
-                onChange={handleChange(setDob)}
-              
-              />
+             
               <FloatingInput
                 label="Email"
                 type="email"
@@ -84,17 +69,21 @@ export default function Signup() {
                 onChange={handleChange(setEmail)}
                error={!settingOtp?error:""}
               />
-              {settingOtp && (
+              {settingOtp && (<>
                 <FloatingInput
                   label="OTP"
-                  type="text"
+                  type="number"
                   value={otp}
                   onChange={handleChange(setOtp)}
                   error={error}
                 />
+                <p className="text-blue-500  underline cursor-pointer   " onClick={login}>Resend otp</p>
+                <input type="checkbox" id="rememberMe" />
+                <label htmlFor="rememberMe" className="ml-2">Keep me logged in</label>
+                </>
               )}
 
-              <div className="rounded-xl overflow-hidden mt-5 mb-5">
+              <div className="rounded-xl overflow-hidden mt-1 mb-5">
                 <button
                   type="submit"
                   className="w-full h-12 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition"
@@ -104,9 +93,9 @@ export default function Signup() {
               </div>
             </form>
             <p className="font-light text-center">
-              Already have an account??{" "}
-              <Link to="/" className="text-blue-500 font-bold underline">
-                Sign in
+              Need an account?{" "}
+              <Link to="/Signup" className="text-blue-500 font-bold underline">
+                Create one
               </Link>
             </p>
           </div>
