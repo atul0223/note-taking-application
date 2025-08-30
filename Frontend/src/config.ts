@@ -1,1 +1,1 @@
-export const BACKEND_URL="https://note-taking-application-sqkn.vercel.app"
+export const BACKEND_URL="https://note-taking-application-wgz8.onrender.com"
