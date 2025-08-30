@@ -29,6 +29,7 @@ const login = async (req, res) => {
 }
 const verifyOtp = async (req, res) => {
     const { email, otp ,keepLoggedIn} = req.body;
+    
     if (![email, otp].every(Boolean)) {
         return res.status(400).json({ message: "All fields are required" });
     }

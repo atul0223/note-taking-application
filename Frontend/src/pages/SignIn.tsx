@@ -9,6 +9,7 @@ export default function SignIn() {
   const [otp, setOtp] = React.useState("");
   const [settingOtp, setSettingOtp] = React.useState(false);
   const [error, setError] = React.useState("");
+  const [keepLoggedIn, setKeepLoggedIn] = React.useState(false);
   const navigate = useNavigate();
   const handleChange =
     (setter: React.Dispatch<React.SetStateAction<string>>) =>
@@ -36,7 +37,7 @@ export default function SignIn() {
       })
       .catch(error => {
         console.error("Error fetching user:", error);
-        navigate("/SignIn");
+       
       });
   };
   useEffect(() => {
@@ -60,7 +61,7 @@ export default function SignIn() {
       const res =await axios
         .post(
           `${BACKEND_URL}/user/verifyOtp`,
-          { email, otp },
+          { email, otp ,keepLoggedIn },
           { withCredentials: true }
         )
         .then(() => {
@@ -118,7 +119,7 @@ export default function SignIn() {
                   >
                     Resend otp
                   </p>
-                  <input type="checkbox" id="rememberMe" />
+                  <input type="checkbox" id="rememberMe" checked={keepLoggedIn} onChange={() => setKeepLoggedIn(!keepLoggedIn)} />
                   <label htmlFor="rememberMe" className="ml-2">
                     Keep me logged in
                   </label>

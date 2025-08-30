@@ -60,7 +60,7 @@ const fetchUser = async() => {
       })
       .catch(error => {
         console.error("Error fetching user:", error);
-        navigate("/SignIn");
+        
       });
   };
   useEffect(() => {

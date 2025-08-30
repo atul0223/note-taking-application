@@ -48,7 +48,7 @@ export default function Dashboard() {
       
         };
     const handleSignOut = async() => {
-        await axios.post(`${BACKEND_URL}/user/signout`, { withCredentials: true })
+        await axios.post(`${BACKEND_URL}/user/signout`,{}, { withCredentials: true })
             .then(() => {
           
                 setUser(null);

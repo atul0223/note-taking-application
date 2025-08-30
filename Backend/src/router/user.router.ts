@@ -14,6 +14,8 @@ router.route("/createNote").post(verifyUser,createNote);
 router.route("/deleteNote/:id").delete(verifyUser,deleteNote);  
 router.post("/signout",(req,res)=>{
     const {token} = req.cookies;
+    
+    
     if(!token) return res.status(401).json({message: "No token provided"});
     // Invalidate the token (implementation depends on your auth strategy)
     res.clearCookie("token");
