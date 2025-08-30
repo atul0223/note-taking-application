@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import FloatingInput from "../components/FloatingInput";
 import axios from "axios";
 import {BACKEND_URL} from "../config";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 export default function Signup() {
   const [name, setName] = React.useState("");
   const [dob, setDob] = React.useState("");
   const [email, setEmail] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
   const [otp, setOtp] = React.useState("");
   const [settingOtp, setSettingOtp] = React.useState(false);
   const [error, setError] = React.useState("");
-//  const navigate = useNavigate()
+  const navigate = useNavigate()
   const handleChange =
     (setter: React.Dispatch<React.SetStateAction<string>>) => (value: string) => {
       setter(value);
@@ -18,17 +19,22 @@ export default function Signup() {
     };
 
   const handleSubmit = async(e: React.FormEvent) => {
+    setLoading(true);
     e.preventDefault();
     if (!settingOtp) {
       if (!name || !dob || !email) {
         setError("Please fill out all fields before requesting OTP.");
+        setLoading(false);
         return;
       }
+      setLoading(true);
       await axios.post(`${BACKEND_URL}/user/SignIn`, { username: name, dob, email }, { withCredentials: true }).then(() => {
-        
-        
+
+        setLoading(false);
+      setLoading(false);
         setSettingOtp(true);
       }).catch((_error) => {
+        setLoading(false);
         setError(_error.response?.data?.message || "Failed to send OTP. Please try again.");
       });
      
@@ -38,8 +44,8 @@ export default function Signup() {
         setError("Please enter the OTP.");
         return;
       } await axios.post(`${BACKEND_URL}/user/verifyOtp`, { email, otp }, { withCredentials: true }).then(() => {
-        
-        
+        navigate("/");
+        setLoading(false);
         setSettingOtp(true);
       }).catch((_error) => {
         setError("Failed to send OTP. Please try again.");
@@ -47,7 +53,19 @@ export default function Signup() {
 
     }
   };
-
+const fetchUser = async() => {
+    await axios.get(`${BACKEND_URL}/user/getUser`, { withCredentials: true })
+      .then(() => {
+        navigate("/");
+      })
+      .catch(error => {
+        console.error("Error fetching user:", error);
+        navigate("/SignIn");
+      });
+  };
+  useEffect(() => {
+    fetchUser();
+  }, []);
   return (
     <div className="flex-col-12 flex pt-4  sm:pt-0 ">
       <div className="sm:w-5/12 w-full max-h-screen p-4 overflow-y-auto">
@@ -65,12 +83,16 @@ export default function Signup() {
           <div className="p-4 mt-4">
             <form onSubmit={handleSubmit} className="space-y-5">
               <FloatingInput
+                key="name"
+                readOnly={settingOtp}
                 label="Your Name"
                 value={name}
                 onChange={handleChange(setName)}
                
               />
               <FloatingInput
+                key="dob"
+                readOnly={settingOtp}
                 label="Date of Birth"
                 type="date"
                 value={dob}
@@ -78,7 +100,9 @@ export default function Signup() {
               
               />
               <FloatingInput
+                key="email"
                 label="Email"
+                readOnly={settingOtp}
                 type="email"
                 value={email}
                 onChange={handleChange(setEmail)}
@@ -86,6 +110,8 @@ export default function Signup() {
               />
               {settingOtp && (
                 <FloatingInput
+                  key="otp"
+                  readOnly={false}
                   label="OTP"
                   type="text"
                   value={otp}
@@ -97,15 +123,16 @@ export default function Signup() {
               <div className="rounded-xl overflow-hidden mt-5 mb-5">
                 <button
                   type="submit"
-                  className="w-full h-12 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition"
+                  className={`w-full h-12 text-white rounded-xl hover:bg-blue-600 transition ${loading ? "bg-gray-500" : "bg-blue-500"}`}
+                  disabled={loading}
                 >
-                  {settingOtp ? "Sign up" : "Get OTP"}
+                  {loading ? "Loading..." : settingOtp ? "Sign up" : "Get OTP"}
                 </button>
               </div>
             </form>
             <p className="font-light text-center">
               Already have an account??{" "}
-              <Link to="/" className="text-blue-500 font-bold underline">
+              <Link to="/SignIn" className="text-blue-500 font-bold underline">
                 Sign in
               </Link>
             </p>

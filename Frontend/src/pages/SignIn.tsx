@@ -1,47 +1,78 @@
-import React from "react";
+import React, { useEffect } from "react";
 import FloatingInput from "../components/FloatingInput";
 import axios from "axios";
-import {BACKEND_URL} from "../config";
-import { Link } from "react-router-dom";
+import { BACKEND_URL } from "../config";
+import { Link, useNavigate } from "react-router-dom";
 export default function SignIn() {
-
+  const [loading, setLoading] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [otp, setOtp] = React.useState("");
   const [settingOtp, setSettingOtp] = React.useState(false);
   const [error, setError] = React.useState("");
-// const navigate = useNavigate()   to be used later
+  const navigate = useNavigate();
   const handleChange =
-    (setter: React.Dispatch<React.SetStateAction<string>>) => (value: string) => {
+    (setter: React.Dispatch<React.SetStateAction<string>>) =>
+    (value: string) => {
       setter(value);
       setError(""); // Clear error when user types
     };
-const login = async()=>{ await axios.post(`${BACKEND_URL}/user/login`, { email }, { withCredentials: true }).then(() => {
- 
-  setSettingOtp(true);
-      }).catch((_error) => {
-        setError(_error.response?.data?.message );
+  const login = async () => {
+    setLoading(true);
+    await axios
+      .post(`${BACKEND_URL}/user/login`, { email }, { withCredentials: true })
+      .then(() => {
+        setLoading(false);
+        setSettingOtp(true);
+      })
+      .catch((_error) => {
+        setLoading(false);
+        setError(_error.response?.data?.message);
       });
-      }
-  const handleSubmit =async (e: React.FormEvent) => {
+  };
+  const fetchUser = async() => {
+    await axios.get(`${BACKEND_URL}/user/getUser`, { withCredentials: true })
+      .then(() => {
+        navigate("/");
+      })
+      .catch(error => {
+        console.error("Error fetching user:", error);
+        navigate("/SignIn");
+      });
+  };
+  useEffect(() => {
+    fetchUser();
+  }, []);
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!settingOtp) {
       if (!email) {
         setError("Please fill out all fields before requesting OTP.");
         return;
       }
-      login()
-      
+      login();
     } else {
       if (!otp) {
         setError("Please enter the OTP.");
         return;
-      } await axios.post(`${BACKEND_URL}/user/verifyOtp`, { email, otp }, { withCredentials: true }).then(() => {
-     
-        setSettingOtp(true);
-      }).catch((_error) => {
-        setError(_error.response?.data?.message );
-      });
-      
+      }
+
+      setLoading(true);
+      const res =await axios
+        .post(
+          `${BACKEND_URL}/user/verifyOtp`,
+          { email, otp },
+          { withCredentials: true }
+        )
+        .then(() => {
+          setLoading(false);
+          navigate("/");
+        })
+        .catch((_error) => {
+          setLoading(false);
+          setError(_error.response?.data?.message);
+        });
+        console.log(res);
+        
     }
   };
 
@@ -61,40 +92,54 @@ const login = async()=>{ await axios.post(`${BACKEND_URL}/user/login`, { email }
           </p>
           <div className="p-4 mt-4">
             <form onSubmit={handleSubmit} className="space-y-5">
-             
               <FloatingInput
+                key="email"
                 label="Email"
                 type="email"
                 value={email}
                 onChange={handleChange(setEmail)}
-               error={!settingOtp?error:""}
+                error={!settingOtp ? error : ""}
+                readOnly={settingOtp}
               />
-              {settingOtp && (<>
-                <FloatingInput
-                  label="OTP"
-                  type="number"
-                  value={otp}
-                  onChange={handleChange(setOtp)}
-                  error={error}
-                />
-                <p className="text-blue-500  underline cursor-pointer   " onClick={login}>Resend otp</p>
-                <input type="checkbox" id="rememberMe" />
-                <label htmlFor="rememberMe" className="ml-2">Keep me logged in</label>
+              {settingOtp && (
+                <>
+                  <FloatingInput
+                    key="otp"
+                    label="OTP"
+                    readOnly={false}
+                    type="number"
+                    value={otp}
+                    onChange={handleChange(setOtp)}
+                    error={error}
+                  />
+                  <p
+                    className="text-blue-500  underline cursor-pointer   "
+                    onClick={login}
+                  >
+                    Resend otp
+                  </p>
+                  <input type="checkbox" id="rememberMe" />
+                  <label htmlFor="rememberMe" className="ml-2">
+                    Keep me logged in
+                  </label>
                 </>
               )}
 
               <div className="rounded-xl overflow-hidden mt-1 mb-5">
                 <button
                   type="submit"
-                  className="w-full h-12 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition"
+                  className={`w-full h-12 ${
+                    loading ? "bg-gray-500" : "bg-blue-500"
+                  } text-white rounded-xl hover:bg-blue-600 transition`}
+                  disabled={loading}
                 >
-                  {settingOtp ? "Sign up" : "Get OTP"}
+                  {loading ? "Loading..." : settingOtp ? "Sign up" : "Get OTP"}
                 </button>
               </div>
             </form>
             <p className="font-light text-center">
               Need an account?{" "}
-              <Link to="/Signup" className="text-blue-500 font-bold underline">
+              <Link to="/SignUp" className="text-blue-500 font-bold underline">
                 Create one
               </Link>
             </p>
@@ -103,7 +148,11 @@ const login = async()=>{ await axios.post(`${BACKEND_URL}/user/login`, { email }
       </div>
       <div className="hidden sm:block w-7/12 ">
         <div className="hidden sm:block w-full h-screen p-2">
-          <img src="/pic2.svg" alt="" className="w-full h-full object-cover rounded-2xl" />
+          <img
+            src="/pic2.svg"
+            alt=""
+            className="w-full h-full object-cover rounded-2xl"
+          />
         </div>
       </div>
     </div>

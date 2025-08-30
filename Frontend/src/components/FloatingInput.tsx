@@ -7,12 +7,14 @@ const FloatingInput = ({
   helperText,
   value,
   onChange,
+  readOnly
 }: {
   label: string;
   type?: string;
   error?: string;
   helperText?: string;
   value: string;
+  readOnly: boolean;
   onChange: (value: string) => void;
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -23,7 +25,9 @@ const FloatingInput = ({
     <div className="relative w-full mb-3">
       <input
         type={type}
+        autoFocus
         value={value}
+        readOnly={readOnly}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           onChange(e.target.value)
         }

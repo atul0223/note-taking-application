@@ -6,6 +6,9 @@ const router = Router()
 router.route("/SignIn").post(signIn)
 router.route("/login").post(login);
 router.route("/verifyOtp").post(verifyOtp);
+router.route("/getUser").get(verifyUser,(req,res)=>{
+    res.status(200).json({user: {name: req.user.username , email: req.user.email}});
+});
 router.route("/getNotes").get(verifyUser,getNotes);
 router.route("/createNote").post(verifyUser,createNote);
 router.route("/deleteNote/:id").delete(verifyUser,deleteNote);  

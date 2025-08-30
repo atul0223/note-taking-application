@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Note from "../models/note.model";
 
 const createNote = async (req, res) => {
@@ -10,13 +11,20 @@ const createNote = async (req, res) => {
 }
 
 const getNotes = async (req, res) => {
-    const notes = await Note.find({ userId: req.user.id });
-    return res.status(200).json({ notes });
+    try {
+        const notes = await Note.find({ userId: req.user.id });
+        return res.status(200).json({ notes });
+    } catch (error) {
+        console.error("Error fetching notes:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+
 }
 
 
 const  deleteNote = async (req, res) => {
-    const { id } = req.params;
+    let { id } = req.params;
+    id = new mongoose.Types.ObjectId(id);
     const note = await Note.findOne({ _id: id, userId: req.user.id });
     if (!note) {
         return res.status(404).json({ message: "Note not found" });

@@ -46,9 +46,11 @@ const verifyOtp = async (req, res) => {
     const token = generateJWT(user, keepLoggedIn ? "7d" : "30m");
     await user.save();
     return res
-    .cookie("token", token, { httpOnly: true,secure: true,
-  sameSite: 'Strict',
-  maxAge: keepLoggedIn ? 30 * 24 * 60 * 60 * 1000 : null})
+    .cookie("token", token, {   httpOnly: true,
+          secure: true,
+          sameSite: "none",
+          maxAge: keepLoggedIn ? 30 * 24 * 60 * 60 * 1000 : 30 * 60 * 1000, // 30 days or 30 minutes
+      })
     .status(200).json({ message: "OTP verified successfully" });
 }
 export { signIn, login, verifyOtp };
