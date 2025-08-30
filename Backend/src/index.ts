@@ -1,6 +1,5 @@
 import  dotenv  from "dotenv";
-import fs from "fs";
-import https from "https";
+
 import app from "./app";
 import dbConnection from "./DbConnection/connection";
 dotenv.config();

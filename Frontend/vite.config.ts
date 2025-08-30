@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import fs from "node:fs"
+
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
