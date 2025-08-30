@@ -5,11 +5,10 @@
   "type": "commonjs",
   "scripts": {
     "dev": "nodemon --exec ts-node src/index.ts",
-    "build": "tsc",
+    "build": "npm install && tsc",
     "start": "node dist/index.js",
     "clean": "rimraf dist",
-     "postinstall": "npm install --save-dev @types/node"
-
+    "postinstall": "npm install --save-dev @types/node"
   },
   "repository": {
     "type": "git",
