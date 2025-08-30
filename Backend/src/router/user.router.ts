@@ -2,6 +2,7 @@ import { Router } from "express";
 import { login, signIn, verifyOtp } from "../controllers/user.controller";
 import { createNote, deleteNote, getNotes } from "../controllers/notes.controller";
 import verifyUser from "../middleware.ts/auth.middleware";
+
 const router = Router()
 router.route("/SignIn").post(signIn)
 router.route("/login").post(login);
