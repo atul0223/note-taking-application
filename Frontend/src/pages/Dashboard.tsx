@@ -26,7 +26,7 @@ export default function Dashboard() {
             })
             .catch(error => {
                 console.error("Error fetching user:", error);
-                navigate("/SignIn");
+              
             });
         await axios.get(`${BACKEND_URL}/user/getNotes`,{ withCredentials: true })
             .then(response => {
@@ -36,7 +36,7 @@ export default function Dashboard() {
             })
             .catch(error => {
                 console.error("Error fetching notes:", error);
-                navigate("/SignIn");
+              
             });
     }
     useEffect(() => {
