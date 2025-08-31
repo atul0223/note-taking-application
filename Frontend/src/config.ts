@@ -1,1 +1,1 @@
-export const BACKEND_URL="https://note-taking-application-wgz8.onrender.com"
+export const BACKEND_URL="https://note-taking-application-9d7t.onrender.com"
