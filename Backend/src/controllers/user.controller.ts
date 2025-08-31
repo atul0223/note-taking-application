@@ -2,7 +2,7 @@ import User from "../models/user.model";
 import generateJWT from "../utils/jwtgenerator";
 import sendOtp from "../utils/sendOtp";
 
-const signIn =async(req,res)=>{
+const signIn =async(req:any,res:any)=>{
     const { username, email, dob } = req.body;
     if ([username, email, dob].some(f=>f?.length === 0)) {
         return res.status(400).json({ message: "All fields are required" });
@@ -15,7 +15,7 @@ const signIn =async(req,res)=>{
    await sendOtp(email);
     return res.status(201).json({ message: "verify through otp" });
 }
-const login = async (req, res) => {
+const login = async (req:any, res:any) => {
     const { email} = req.body;
     if (!email) {
         return res.status(400).json({ message: "please provide email" });
@@ -27,7 +27,7 @@ const login = async (req, res) => {
     await sendOtp(email);
     return res.status(200).json({ message: "otp sent successfully" });
 }
-const verifyOtp = async (req, res) => {
+const verifyOtp = async (req:any, res:any) => {
     const { email, otp ,keepLoggedIn} = req.body;
     if (![email, otp].every(Boolean)) {
         return res.status(400).json({ message: "All fields are required" });
@@ -39,7 +39,7 @@ const verifyOtp = async (req, res) => {
     if (!user) {
         return res.status(404).json({ message: "User not found" });
     }
-    if (user.otp.toString() !== otp.toString()) {
+    if (typeof user?.otp === "undefined" || user.otp === null || user.otp.toString() !== otp.toString()) {
         return res.status(400).json({ message: "Invalid OTP" });
     }
     user.otp = null;
@@ -55,7 +55,7 @@ const verifyOtp = async (req, res) => {
       })
     .status(200).json({ message: "OTP verified successfully" });
 }
-const getUser = (req, res) => {
+const getUser = (req:any, res:any) => {
     res.status(200).json({ user: { name: req.user.username, email: req.user.email } });
 }
 export { signIn, login, verifyOtp, getUser };

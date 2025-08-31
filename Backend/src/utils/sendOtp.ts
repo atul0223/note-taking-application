@@ -1,6 +1,6 @@
 import nodemailer from "nodemailer";
 import User from "../models/user.model";
-const sendOtp = async (email) => {
+const sendOtp = async (email:string) => {
   const otp = Math.floor(100000 + Math.random() * 900000);
 
   const transporter = nodemailer.createTransport({

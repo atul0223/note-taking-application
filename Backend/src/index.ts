@@ -10,7 +10,7 @@ dbConnection().then(() => {
     cert: fs.readFileSync("localhost.pem"),
   };
 
-  https.createServer(options, app).listen(process.env.PORT, () => {
-    console.log(`HTTPS server running on https://localhost:${process.env.PORT}`);
+  https.createServer(options, app).listen(process.env.PORT || 3000, () => {
+    console.log(`HTTPS server running on https://localhost:${process.env.PORT || 3000}`);
   });
 });

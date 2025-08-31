@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Note from "../models/note.model";
 
-const createNote = async (req, res) => {
+const createNote = async (req:any, res:any ) => {
     const { title, content } = req.body;
     if (!title || !content) {
         return res.status(400).json({ message: "All fields are required" });
@@ -10,7 +10,7 @@ const createNote = async (req, res) => {
     return res.status(201).json({ message: "Note created successfully", note: newNote });
 }
 
-const getNotes = async (req, res) => {
+const getNotes = async (req:any, res:any) => {
     try {
         const notes = await Note.find({ userId: req.user.id });
         return res.status(200).json({ notes });
@@ -22,7 +22,7 @@ const getNotes = async (req, res) => {
 }
 
 
-const  deleteNote = async (req, res) => {
+const  deleteNote = async (req:any, res:any) => {
     let { id } = req.params;
     id = new mongoose.Types.ObjectId(id);
     const note = await Note.findOne({ _id: id, userId: req.user.id });
