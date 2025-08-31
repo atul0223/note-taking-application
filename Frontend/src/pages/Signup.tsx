@@ -53,19 +53,7 @@ export default function Signup() {
 
     }
   };
-const fetchUser = async() => {
-    await axios.get(`${BACKEND_URL}/user/getUser`, { withCredentials: true })
-      .then(() => {
-        navigate("/");
-      })
-      .catch(error => {
-        console.error("Error fetching user:", error);
-        navigate("/SignIn");
-      });
-  };
-  useEffect(() => {
-    fetchUser();
-  }, []);
+
   return (
     <div className="flex-col-12 flex pt-4  sm:pt-0 ">
       <div className="sm:w-5/12 w-full max-h-screen p-4 overflow-y-auto">

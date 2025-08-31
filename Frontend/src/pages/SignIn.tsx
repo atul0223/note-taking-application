@@ -29,19 +29,7 @@ export default function SignIn() {
         setError(_error.response?.data?.message);
       });
   };
-  const fetchUser = async() => {
-    await axios.get(`${BACKEND_URL}/user/getUser`, { withCredentials: true })
-      .then(() => {
-        navigate("/");
-      })
-      .catch(error => {
-        console.error("Error fetching user:", error);
-        navigate("/SignIn");
-      });
-  };
-  useEffect(() => {
-    fetchUser();
-  }, []);
+ 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!settingOtp) {
