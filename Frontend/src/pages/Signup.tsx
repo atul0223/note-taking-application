@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import FloatingInput from "../components/FloatingInput";
 import axios from "axios";
 import {BACKEND_URL} from "../config";
