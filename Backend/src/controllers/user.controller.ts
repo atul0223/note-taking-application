@@ -43,8 +43,10 @@ const verifyOtp = async (req, res) => {
         return res.status(400).json({ message: "Invalid OTP" });
     }
     user.otp = null;
-    const token = generateJWT(user, keepLoggedIn ? "7d" : "30m");
+    const token = generateJWT(user._id , keepLoggedIn ? "30d" : "30m");
     await user.save();
+    console.log("Token being set:", token);
+
     return res
     .cookie("token", token, {   httpOnly: true,
           secure: true,
@@ -53,4 +55,7 @@ const verifyOtp = async (req, res) => {
       })
     .status(200).json({ message: "OTP verified successfully" });
 }
-export { signIn, login, verifyOtp };
+const getUser = (req, res) => {
+    res.status(200).json({ user: { name: req.user.username, email: req.user.email } });
+}
+export { signIn, login, verifyOtp, getUser };
