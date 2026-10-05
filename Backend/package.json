@@ -5,7 +5,6 @@
   "type": "commonjs",
   "scripts": {
     "dev": "nodemon --exec ts-node src/index.ts",
-
     "build": "tsc",
     "start": "node dist/index.js"
   },
@@ -21,6 +20,7 @@
   "homepage": "https://github.com/atul0223/note-taking-application#readme",
   "description": "",
   "dependencies": {
+    "@getbrevo/brevo": "^6.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
